@@ -18,10 +18,10 @@ const int JoystickBtn = 6;
 const int JoystickX = A7;
 const int JoystickY = A6;
 
-int controlPacket;
+char controlPacket;
 String controlRequest;
 
-char controllerName;
+String controllerName;
 
 int writingChannel;
 int readingChannel;
@@ -46,16 +46,16 @@ void loop() {
   while (!radio.available());
   radio.read(&controlRequest, sizeof(controlRequest));
   if (controlRequest == "?v"){
-    int controlPacket[] = {analogRead(JoystickX), analogRead(JoystickY), digitalRead(JoystickBtn), digitalRead(BlueBtn), digitalRead(YellowBtn), digitalRead(GreenBtn), digitalRead(RedBtn)};
+    char controlPacket[] = {analogRead(JoystickX), analogRead(JoystickY), digitalRead(JoystickBtn), digitalRead(BlueBtn), digitalRead(YellowBtn), digitalRead(GreenBtn), digitalRead(RedBtn)};
   }else if (controlRequest.substring(0,2) == "!c"){
     writingChannel = controlRequest.substring(2,3).toInt();
     readingChannel = controlRequest.substring(3,4).toInt();
   }else if (controlRequest == "?c"){
-    controlPacket[] = {writingChannel,readingChannel};
+    char controlPacket[] = {writingChannel,readingChannel};
   }else if (controlRequest.substring(0,2) == "!n"){
     controllerName = controlRequest.substring(2);
   }else if (controlRequest == "?n"){
-    controlPacket = controllerName;
+    char controlPacket = controllerName.c_str();
   }else{
     return;
   }
