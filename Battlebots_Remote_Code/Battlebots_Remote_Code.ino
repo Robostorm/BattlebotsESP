@@ -1,5 +1,5 @@
 // Battlebots Remote Code 
-// by: John Brereton
+// by: John Brereton & Logan Greif
 // Made for RF-Nano board
 
 #include <SPI.h>
