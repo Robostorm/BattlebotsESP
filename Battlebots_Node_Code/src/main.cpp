@@ -17,19 +17,19 @@ String controlRequest;
 
 String controllerName;
 
-int writingChannel;
-int readingChannel;
+int writingChannel = addresses[0];
+int readingChannel = addresses[1];
 
 void setup() {
   // Get values from EEPROM
-  int eeAddress = 0;
-  EEPROM.get(eeAddress, addresses);
+  //int eeAddress = 0;
+  //EEPROM.get(eeAddress, addresses);
 
   
   // Radio Setup
   radio.begin();
-  radio.openWritingPipe(addresses[writingChannel]); // 00002
-  radio.openReadingPipe(1, addresses[readingChannel]); // 00001
+  radio.openWritingPipe(addresses[writingChannel]);
+  radio.openReadingPipe(1, addresses[readingChannel]);
   radio.setPALevel(RF24_PA_MIN);
 
 }
