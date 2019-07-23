@@ -16,11 +16,11 @@ const int YellowBtn = 2;
 const int RedBtn = 3;
 const int GreenBtn = 4;
 const int BlueBtn = 5;
-const int JoystickBtn = 6;
+const int JoystickBtn = 10;
 const int JoystickX = A7;
 const int JoystickY = A6;
 
-char sendPacket;
+int sendPacket;
 String recievePacket;
 String remoteName;
 
@@ -49,7 +49,9 @@ void loop() {
     while (radio.available()) {
       radio.read(&recievePacket, sizeof(recievePacket));
       if (recievePacket == "?v"){
-        char sendPacket[] = {analogRead(JoystickX), analogRead(JoystickY), digitalRead(JoystickBtn), digitalRead(BlueBtn), digitalRead(YellowBtn), digitalRead(GreenBtn), digitalRead(RedBtn)};
+        int joystickXValue = analogRead(JoystickX);
+        int joystickYValue = analogRead(JoystickY);
+        int sendPacket[] = {joystickXValue, joystickYValue, digitalRead(JoystickBtn), digitalRead(BlueBtn), digitalRead(YellowBtn), digitalRead(GreenBtn), digitalRead(RedBtn)};
       }else if (recievePacket.substring(0,2) == "!c"){
         writingChannel = recievePacket.substring(2,3).toInt();
         readingChannel = recievePacket.substring(3,4).toInt();
@@ -62,7 +64,6 @@ void loop() {
       }else{
         return;
       }
-      Serial.print(sendPacket)
   
   delay(5);
   radio.stopListening();
