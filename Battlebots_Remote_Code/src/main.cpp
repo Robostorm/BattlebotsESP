@@ -56,7 +56,7 @@ void loop() {
         writingChannel = recievePacket.substring(2,3).toInt();
         readingChannel = recievePacket.substring(3,4).toInt();
       }else if (recievePacket == "?c"){
-        char sendPacket[] = {writingChannel,readingChannel};
+        int sendPacket[] = {writingChannel,readingChannel};
       }else if (recievePacket.substring(0,2) == "!n"){
         remoteName = recievePacket.substring(2);
       }else if (recievePacket == "?n"){

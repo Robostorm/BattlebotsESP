@@ -43,6 +43,8 @@ void loop() {
   radio.startListening();
   radio.read(&recievePacket, sizeof(recievePacket));
   setMotor(recievePacket);
+  // Program Buttons Here
+  
 }
 
 void setMotor(recievePacket) {
@@ -109,27 +111,52 @@ void setMotor(recievePacket) {
   }
 }
 
-void setServo(int servoNumber, int angle) {
-
-
+void setServo(direction, angle) {
+  if (direction == )
 }
 
 // All button functions will be called each time the controlller recieves data from the remote
-void redButton() {
-  
+void joystickButton(recievePacket){
+  if (recievePacket[2]==1){
+    return true
+  }
+  else{
+    return false
+  }
 }
 
-void blueButton(bool blueButtonValue) {
-
-
+void blueButton(recievePacket) {
+  if recievePacket[3]==1){
+    return true
+  }
+  else{
+    return false
+  }
 }
 
-void greenButton(bool greenButtonValue) {
-
-
+void yellowButton(recievePacket) {
+  if recievePacket[4]==1){
+    return true
+  }
+  else{
+    return false
+  }
 }
 
-void yellowButton(bool yellowButtonValue) {
+void greenButton(recievePacket) {
+  if recievePacket[5]==1){
+    return true
+  }
+  else{
+    return false
+  }
+}
 
-
+void redButton(recievePacket) {
+  if recievePacket[6]==1){
+    return true
+  }
+  else{
+    return false
+  }
 }
