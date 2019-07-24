@@ -12,11 +12,11 @@ RF24 radio(10, 9);
 
 byte addresses[6] = {00001,00002};
 
-const int YellowBtn = D2;
+/*const int YellowBtn = D2;
 const int RedBtn = D3;
 const int GreenBtn = D4;
 const int BlueBtn = D5;
-const int JoystickBtn = D6;
+const int JoystickBtn = D6;*/
 const int JoystickX = A6;
 const int JoystickY = A7;
 
@@ -32,13 +32,13 @@ void setup() {
   radio.openWritingPipe(addresses[writingChannel]); // 00002
   radio.openReadingPipe(1, addresses[readingChannel]); // 00001
   radio.setPALevel(RF24_PA_MIN);
-  pinMode(JoystickY, INPUT);
+  /*pinMode(JoystickY, INPUT);
   pinMode(JoystickX, INPUT);
   pinMode(JoystickBtn, INPUT);
   pinMode(BlueBtn, INPUT);
   pinMode(YellowBtn, INPUT);
   pinMode(GreenBtn, INPUT);
-  pinMode(RedBtn, INPUT);
+  pinMode(RedBtn, INPUT);*/
   Serial.begin(9600);
 }
 
@@ -51,7 +51,7 @@ void loop() {
       if (recievePacket == "?v"){
         int joystickXValue = analogRead(JoystickX);
         int joystickYValue = analogRead(JoystickY);
-        int sendPacket[] = {joystickXValue, joystickYValue, digitalRead(JoystickBtn), digitalRead(BlueBtn), digitalRead(YellowBtn), digitalRead(GreenBtn), digitalRead(RedBtn)};
+        //int sendPacket[] = {joystickXValue, joystickYValue, digitalRead(JoystickBtn), digitalRead(BlueBtn), digitalRead(YellowBtn), digitalRead(GreenBtn), digitalRead(RedBtn)};
       }else if (recievePacket.substring(0,2) == "!c"){
         writingChannel = recievePacket.substring(2,3).toInt();
         readingChannel = recievePacket.substring(3,4).toInt();
