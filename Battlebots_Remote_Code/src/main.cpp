@@ -12,13 +12,13 @@ RF24 radio(10, 9);
 
 byte addresses[6] = {00001,00002};
 
-const int YellowBtn = 2;
-const int RedBtn = 3;
-const int GreenBtn = 4;
-const int BlueBtn = 5;
-const int JoystickBtn = 10;
-const int JoystickX = A7;
-const int JoystickY = A6;
+const int YellowBtn = D2;
+const int RedBtn = D3;
+const int GreenBtn = D4;
+const int BlueBtn = D5;
+const int JoystickBtn = D6;
+const int JoystickX = A6;
+const int JoystickY = A7;
 
 int sendPacket;
 String recievePacket;

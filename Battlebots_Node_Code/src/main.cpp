@@ -53,31 +53,39 @@ void setMotor(recievePacket) {
 
   // Y-axis used for forward and backward control
   if (joystickY < 470) {
-    // Set Motor A backward
-    digitalWrite(in1, HIGH);
-    digitalWrite(in2, LOW);
-    // Set Motor B backward
-    digitalWrite(in3, HIGH);
-    digitalWrite(in4, LOW);
     // Convert the declining Y-axis readings for going backward from 470 to 0 into 0 to 255 value for the PWM signal for increasing the motor speed
-    motorSpeedA = map(joystickY, 470, 0, 0, 255);
-    motorSpeedB = map(joystickY, 470, 0, 0, 255);
+    rightPower = map(joystickY, 470, 0, 0, 4095);
+    leftPower = map(joystickY, 470, 0, 0, 4095);
+    // Set Right Motors backward
+    tlc_send(0,0);
+    tlc_send(1,rightPower);
+    tlc_send(2,0);
+    tlc_send(3,rightPower);
+    // Set Left Motors backward
+    tlc_send(4,0);
+    tlc_send(5,leftPower);
+    tlc_send(6,0);
+    tlc_send(7,leftPower);
   }
   else if (joystickY > 550) {
-    // Set Motor A forward
-    digitalWrite(in1, LOW);
-    digitalWrite(in2, HIGH);
-    // Set Motor B forward
-    digitalWrite(in3, LOW);
-    digitalWrite(in4, HIGH);
+    // Set Right Motors forward
+    tlc_send(0,rightPower);
+    tlc_send(1,0);
+    tlc_send(2,rightPower);
+    tlc_send(3,0);
+    // Set Left Motors forward
+    tlc_send(0,leftPower);
+    tlc_send(1,0);
+    tlc_send(2,leftPower);
+    tlc_send(3,0);
     // Convert the increasing Y-axis readings for going forward from 550 to 1023 into 0 to 255 value for the PWM signal for increasing the motor speed
-    motorSpeedA = map(joystickY, 550, 1023, 0, 255);
-    motorSpeedB = map(joystickY, 550, 1023, 0, 255);
+    rightPower = map(joystickY, 550, 1023, 0, 255);
+    leftPower = map(joystickY, 550, 1023, 0, 255);
   }
   // If joystick stays in middle the motors are not moving
   else {
-    motorSpeedA = 0;
-    motorSpeedB = 0;
+    rightPower = 0;
+    leftPower = 0;
   }
 
   // X-axis used for left and right control
@@ -85,34 +93,34 @@ void setMotor(recievePacket) {
     // Convert the declining X-axis readings from 470 to 0 into increasing 0 to 255 value
     int xMapped = map(joystickX, 470, 0, 0, 255);
     // Move to left - decrease left motor speed, increase right motor speed
-    motorSpeedA = motorSpeedA - xMapped;
-    motorSpeedB = motorSpeedB + xMapped;
+    rightPower = rightPower - xMapped;
+    leftPower = leftPower + xMapped;
     // Confine the range from 0 to 255
-    if (motorSpeedA < 0) {
-      motorSpeedA = 0;
+    if (rightPower < 0) {
+      rightPower = 0;
     }
-    if (motorSpeedB > 255) {
-      motorSpeedB = 255;
+    if (leftPower > 255) {
+      leftPower = 255;
     }
   }
   if (joystickX > 550) {
     // Convert the increasing X-axis readings from 550 to 1023 into 0 to 255 value
     int xMapped = map(joystickX, 550, 1023, 0, 255);
     // Move right - decrease right motor speed, increase left motor speed
-    motorSpeedA = motorSpeedA + xMapped;
-    motorSpeedB = motorSpeedB - xMapped;
+    rightPower = rightPower + xMapped;
+    leftPower = leftPower - xMapped;
     // Confine the range from 0 to 255
-    if (motorSpeedA > 255) {
-      motorSpeedA = 255;
+    if (rightPower > 255) {
+      rightPower = 255;
     }
-    if (motorSpeedB < 0) {
-      motorSpeedB = 0;
+    if (leftPower < 0) {
+      leftPower = 0;
     }
   }
 }
 
-void setServo(direction, angle) {
-  if (direction == )
+void setServo(position) {
+
 }
 
 // All button functions will be called each time the controlller recieves data from the remote
@@ -159,4 +167,15 @@ void redButton(recievePacket) {
   else{
     return false
   }
+}
+
+void tlc_send(uint8_t channel, uint16_t value){
+    uint8_t byte1 = channel + ((value & 0x000F) << 4);
+    uint8_t byte2 = (value & 0x0FF0) >> 4;
+
+    Wire.beginTransmission(ATMEGA_I2C_ADDR);
+    Wire.write(byte1);
+    Wire.write(byte2);
+    Wire.write("\n");
+    Wire.endTransmission();
 }
