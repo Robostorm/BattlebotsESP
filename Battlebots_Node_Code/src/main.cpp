@@ -39,7 +39,7 @@ void setup() {
 void loop() {
   delay(5);
   radio.stopListening();
-  radio.write(&"?v", sizeof("?v");
+  radio.write(&"?v", sizeof("?v"));
   radio.startListening();
   radio.read(&recievePacket, sizeof(recievePacket));
   setMotor(recievePacket);
