@@ -1,5 +1,5 @@
 // Battlebots Controller Unit Code 
-// by: John Brereton & Logan Greif & Ismail Mansuri
+// by: John Brereton & Logan Greif
 // Made for NodeMCU LoLin Board
 
 #include <Arduino.h>
@@ -13,11 +13,10 @@
 RF24 radio(D7, D8); // CE, CSN
 const byte addresses[][6] = {"00001", "00002"};
 
-char sendPacket;
-String recievePacket;
+char sendPacket[32] = "";
+char recievePacket[32] = "";
 
 String controllerName;
-
 
 int rightPower;
 int leftPower;
@@ -172,24 +171,25 @@ void setup() {
   radio.setPALevel(RF24_PA_MIN);
 
   Serial.begin(9600);
+  Serial.println("Node statring");
 }
 
 
 void loop() {
   delay(5);
   radio.stopListening();
-  radio.write(&"?v", sizeof("?v"));
+  sendPacket[0] = '?';
+  sendPacket[1] = 'v';
+  sendPacket[2] = 0;
+  radio.write(sendPacket, sizeof(sendPacket));
   radio.startListening();
+  while(!radio.available()) {}
   radio.read(&recievePacket, sizeof(recievePacket));
-  Serial.println(recievePacket[0]);
+  Serial.println(recievePacket);
   int joyX = recievePacket[0];
   int joyY = recievePacket[1];
   //setMotor(joyX, joyY);
   // Program Buttons Here
-  tlc_send(0, 0);
-  tlc_send(1, 2000);
-  tlc_send(7, 0);
-  tlc_send(6, 2000);
-  delay(10); //this delay is important; data will corrupt if it isn't here
+  
   
 }
