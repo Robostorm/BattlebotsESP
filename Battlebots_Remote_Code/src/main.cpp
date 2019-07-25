@@ -20,7 +20,7 @@ const int JoystickBtn = 10;
 const int JoystickX = 19;
 const int JoystickY = 22;
 
-int sendPacket[];
+int sendPacket;
 String recievePacket;
 String remoteName;
 
