@@ -10,7 +10,7 @@
 
 RF24 radio(10, 9);
 
-byte addresses[6] = {00001,00002};
+const byte addresses[][6] = {"00001", "00002"};
 
 const int YellowBtn = 9;
 const int RedBtn = 3;
@@ -20,17 +20,14 @@ const int JoystickBtn = 10;
 const int JoystickX = 19;
 const int JoystickY = 22;
 
-int sendPacket;
+int sendPacket[];
 String recievePacket;
 String remoteName;
 
-byte writingChannel = addresses[1];
-byte readingChannel = addresses[0];
-
 void setup() {
   radio.begin();
-  radio.openWritingPipe(addresses[writingChannel]); // 00002
-  radio.openReadingPipe(1, addresses[readingChannel]); // 00001
+  radio.openWritingPipe(addresses[1]); // 00002
+  radio.openReadingPipe(1, addresses[0]); // 00001
   radio.setPALevel(RF24_PA_MIN);
   pinMode(JoystickY, INPUT);
   pinMode(JoystickX, INPUT);
@@ -46,17 +43,18 @@ void loop() {
   delay(5);
   radio.startListening();
   if ( radio.available()) {
-    while (radio.available()) {
+    //while (radio.available()) {
       radio.read(&recievePacket, sizeof(recievePacket));
+      Serial.println(recievePacket);
       if (recievePacket == "?v"){
         int joystickXValue = analogRead(JoystickX);
         int joystickYValue = analogRead(JoystickY);
         int sendPacket[] = {joystickXValue, joystickYValue, digitalRead(JoystickBtn), digitalRead(BlueBtn), digitalRead(YellowBtn), digitalRead(GreenBtn), digitalRead(RedBtn)};
       }else if (recievePacket.substring(0,2) == "!c"){
-        writingChannel = recievePacket.substring(2,3).toInt();
-        readingChannel = recievePacket.substring(3,4).toInt();
+        //writingChannel = recievePacket.substring(2,3).toInt();
+        //readingChannel = recievePacket.substring(3,4).toInt();
       }else if (recievePacket == "?c"){
-        int sendPacket[] = {writingChannel,readingChannel};
+        int sendPacket[] = {addresses[1], addresses[0]};
       }else if (recievePacket.substring(0,2) == "!n"){
         remoteName = recievePacket.substring(2);
       }else if (recievePacket == "?n"){
@@ -68,6 +66,6 @@ void loop() {
   delay(5);
   radio.stopListening();
   radio.write(&sendPacket, sizeof(sendPacket));
-    }
+    //}
   }
 }
