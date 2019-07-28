@@ -12,70 +12,48 @@ RF24 radio(10, 9);
 
 const byte addresses[][6] = {"00001", "00002"};
 
-const int YellowBtn = 9;
-const int RedBtn = 3;
-const int GreenBtn = 2;
-const int BlueBtn = 32;
-const int JoystickBtn = 10;
-const int JoystickX = 19;
-const int JoystickY = 22;
+const int YellowBtn = 7;
+const int RedBtn = 5;
+const int GreenBtn = 4;
+const int BlueBtn = 2;
+const int JoystickBtn = 8;
+const int JoystickX = A6;
+const int JoystickY = A7;
 
 char sendPacket[32] = "";
 char recievePacket[32] = "";
 
 void setup() {
   radio.begin();
-  //radio.openWritingPipe(addresses[1]); // 00002
-  radio.openReadingPipe(0, addresses[0]); // 00001
+  radio.openWritingPipe(addresses[1]);
   radio.setPALevel(RF24_PA_MIN);
-  pinMode(JoystickY, INPUT);
-  pinMode(JoystickX, INPUT);
-  //pinMode(JoystickBtn, INPUT);
-  pinMode(BlueBtn, INPUT);
-  //pinMode(YellowBtn, INPUT);
-  pinMode(GreenBtn, INPUT);
-  pinMode(RedBtn, INPUT);
+  pinMode(JoystickBtn, INPUT_PULLUP);
+  pinMode(BlueBtn, INPUT_PULLUP);
+  pinMode(YellowBtn, INPUT_PULLUP);
+  pinMode(GreenBtn, INPUT_PULLUP);
+  pinMode(RedBtn, INPUT_PULLUP);
   Serial.begin(9600);
   Serial.println("Remote starting");
-  radio.startListening();
-  Serial.println("Radio listening");
+  radio.stopListening();
+  Serial.println("Radio is living");
 }
 
 void loop() {
   delay(5);
-  if ( radio.available()) {
-    Serial.println("Bytes available");
-    radio.read(&recievePacket, sizeof(recievePacket));
-    Serial.println(recievePacket);
-    if (recievePacket[0] == '?' && recievePacket[1] == 'v'){
-      int joystickXValue = analogRead(JoystickX);
-      int joystickYValue = analogRead(JoystickY);
-      sprintf(
-        sendPacket,
-        "%03d, %03d, %01d, %01d, %01d, %01d, %01d",
-        joystickXValue,
-        joystickYValue,
-        //digitalRead(JoystickBtn),
-        0,
-        digitalRead(BlueBtn),
-        //digitalRead(YellowBtn),
-        0,
-        digitalRead(GreenBtn),
-        digitalRead(RedBtn)
-      );
-      Serial.println(sendPacket);
-      //radio.stopListening();
-      //radio.write(&sendPacket, sizeof(sendPacket));
-    }else if (recievePacket[0] == '?' && recievePacket[1] == 'c'){
-      //writingChannel = recievePacket.substring(2,3).toInt();
-      //readingChannel = recievePacket.substring(3,4).toInt();
-    }else{
-      
-    }
-    
-    delay(5);
-
-  } else {
-      //Serial.println("No bytes available");
-  }
+  int joystickXValue = analogRead(JoystickX);
+  int joystickYValue = analogRead(JoystickY);
+  sprintf(
+    sendPacket,
+    "%04d, %04d, %01d, %01d, %01d, %01d, %01d",
+    joystickXValue,
+    joystickYValue,
+    digitalRead(JoystickBtn),
+    digitalRead(BlueBtn),
+    digitalRead(YellowBtn),
+    digitalRead(GreenBtn),
+    digitalRead(RedBtn)
+  );
+  Serial.println(sendPacket);
+  radio.stopListening();
+  radio.write(&sendPacket, sizeof(sendPacket));
 }
