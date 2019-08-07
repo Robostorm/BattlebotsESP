@@ -236,6 +236,6 @@ void loop() {
   */
   tlc_send(0, 0);
   tlc_send(1, 3000);
-  tlc_send(2, 0);
-  tlc_send(3, 3000);
+  tlc_send(6, 0);
+  tlc_send(7, 3000);
 }
