@@ -216,6 +216,9 @@ void setup() {
   Serial.println("Node statring");
   radio.startListening();
   Serial.println("Hello");
+
+  // Start I2C connection
+  Wire.begin();
 }
 
 
