@@ -8,10 +8,13 @@
 #include <RF24.h>
 #include <EEPROM.h>
 #include <Wire.h>
+#include <EEPROM.h>
 #define ATMEGA_I2C_ADDR 0x16
 
+
+
 RF24 radio(D7, D8); // CE, CSN
-const byte addresses[][6] = {"00001", "00002"};
+//const byte addresses[][6] = {"00001", "00002"};
 
 char sendPacket[32] = "";
 char recievePacket[32] = "";
@@ -201,18 +204,57 @@ bool redButton(bool value) {
   }
 }
 
+// EEPROM cutom object
+struct eepromData {
+  byte readChannel[6];
+  byte writeChannel[6];
+  char setupSSID[20];
+  char setupPassword[20];
+  char compSSID[20];
+  char compPassword[20];
+  char name[20];
+};
+
+eepromData robotData;
 
 void setup() {
-  // Get values from EEPROM
-  //int eeAddress = 0;
-  //EEPROM.get(eeAddress, addresses);
+  
+  Serial.begin(9600);
+
+  //Check if EEPROM is programmed with valid data
+  int checkValue = 0;
+  EEPROM.get(0, checkValue);
+  if(checkValue != 1){
+    Serial.println("Programming EEPROM with default values");
+    eepromData defaultData = {
+      "00001",
+      "00002",
+      "Battlebots_Setup",
+      "OMGR0b0t$",
+      "RRRRRRRRRRRRRRRRRRR",
+      "0000000000000000000",
+      "Untitled Document"
+    };
+    EEPROM.put(0, 1);
+    EEPROM.put(16, defaultData);
+  }
+  EEPROM.get(16, robotData);
+  
+  // Print out juicy details
+  Serial.print("Read Channel ");
+  Serial.println(robotData.readChannel);
+  Serial.print("Write Channel ");
+  Serial.println(robotData.writeChannel);
+  Serial.print("Robot Name ");
+  Serial.println(robotData.name);
+
+
 
 
   // Radio Setup
   radio.begin();
-  radio.openReadingPipe(1, addresses[1]); // 00002
+  radio.openReadingPipe(1, robotData.readChannel);
   radio.setPALevel(RF24_PA_MIN);
-  Serial.begin(9600);
   Serial.println("Node statring");
   radio.startListening();
   Serial.println("Hello");
