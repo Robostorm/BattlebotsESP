@@ -229,11 +229,11 @@ void setup() {
     eepromData defaultData = {
       "00001",
       "00002",
-      "Battlebots_Setup",
-      "OMGR0b0t$",
+      "Battlebots_Setup000",
+      "OMGR0b0t$0000000000",
       "RRRRRRRRRRRRRRRRRRR",
       "0000000000000000000",
-      "Untitled Document"
+      "Untitled Document00"
     };
     EEPROM.put(0, 1);
     EEPROM.put(16, defaultData);
@@ -241,13 +241,14 @@ void setup() {
   EEPROM.get(16, robotData);
   
   // Print out juicy details
+  /*
   Serial.print("Read Channel ");
-  //Serial.println(robotData.readChannel);
-  Serial.print("Write Channel ");
-  //Serial.println(robotData.writeChannel);
+  Serial.println(robotData.readChannel);
+  Serial.print("Write Channel ");  
+  Serial.println(robotData.writeChannel);
   Serial.print("Robot Name ");
-  //Serial.println(robotData.name);
-
+  Serial.println(robotData.name);
+*/
 
 
 
