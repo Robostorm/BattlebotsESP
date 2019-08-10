@@ -242,11 +242,11 @@ void setup() {
   
   // Print out juicy details
   Serial.print("Read Channel ");
-  Serial.println(robotData.readChannel);
+  //Serial.println(robotData.readChannel);
   Serial.print("Write Channel ");
-  Serial.println(robotData.writeChannel);
+  //Serial.println(robotData.writeChannel);
   Serial.print("Robot Name ");
-  Serial.println(robotData.name);
+  //Serial.println(robotData.name);
 
 
 
