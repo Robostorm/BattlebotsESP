@@ -14,7 +14,7 @@
 
 
 RF24 radio(D7, D8); // CE, CSN
-//const byte addresses[][6] = {"00001", "00002"};
+const byte addresses[][6] = {"00001", "00002"};
 
 char sendPacket[32] = "";
 char recievePacket[32] = "";
@@ -220,11 +220,13 @@ eepromData robotData;
 void setup() {
   
   Serial.begin(9600);
+  
 
+  /*
   //Check if EEPROM is programmed with valid data
   int checkValue = 0;
   EEPROM.get(0, checkValue);
-  if(checkValue != 1){
+  if(checkValue != 2011){
     Serial.println("Programming EEPROM with default values");
     eepromData defaultData = {
       "00001",
@@ -235,22 +237,40 @@ void setup() {
       "0000000000000000000",
       "Untitled Document00"
     };
-    EEPROM.put(0, 1);
-    EEPROM.put(16, defaultData);
+    EEPROM.put(0, 2011);
+    EEPROM.put(32, defaultData);
+    EEPROM.commit();
   }
-  EEPROM.get(16, robotData);
+  EEPROM.get(32, robotData);
+  EEPROM.end();
   
   // Print out juicy details
-  /*
+  
   Serial.print("Read Channel ");
-  Serial.println(robotData.readChannel);
+  Serial.println((long)robotData.readChannel);
   Serial.print("Write Channel ");  
-  Serial.println(robotData.writeChannel);
+  Serial.println((long)robotData.writeChannel);
   Serial.print("Robot Name ");
-  Serial.println(robotData.name);
+  Serial.println((long)robotData.name);
+  */
+
+  // EEPROM Setup
+  // set the EEPROM structure
+  /*
+  struct EEPROM_storage {
+    uint8_t channelNo;
+    char ssid[pfodESP8266Utils::MAX_SSID_LEN + 1]; // WIFI ssid + null
+    char password[pfodESP8266Utils::MAX_PASSWORD_LEN + 1]; // WiFi password,  if empyt use OPEN, else use AUTO (WEP/WPA/WPA2) + null
+  } storage;
+  const int EEPROM_storageSize = sizeof(EEPROM_storage);
+
+  EEPROM.begin(EEPROM_storageSize);
+
+  uint8_t * byteStorageRead = (uint8_t *)&storage;
+  for (size_t i = 0; i < EEPROM_storageSize; i++) {
+    byteStorageRead[i] = EEPROM.read(wifiConfigEEPROMStartAddress + i);
+  }
 */
-
-
 
   // Radio Setup
   radio.begin();
