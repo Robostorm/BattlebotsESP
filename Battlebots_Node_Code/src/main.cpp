@@ -48,22 +48,22 @@ void setMotor(int joyX, int joyY){
   Serial.print(" ");
   Serial.println(right_motor);
 
-  if (right_motor > 0) {
+  //if (right_motor > 0) {
     tlc_send(0, 0);
-    tlc_send(1, right_motor);
+    tlc_send(1, 3000);
     tlc_send(2, 0);
-    tlc_send(3, right_motor);
-  } else if (right_motor < 0) {
-    tlc_send(0, -right_motor);
-    tlc_send(1, 0);
-    tlc_send(2, -right_motor);
-    tlc_send(3, 0);
-  } else {
-    tlc_send(0, 0);
-    tlc_send(1, 0);
-    tlc_send(2, 0);
-    tlc_send(3, 0);
-  }
+    tlc_send(3, 3000);
+  //} else if (right_motor < 0) {
+  //  tlc_send(0, -right_motor);
+  //  tlc_send(1, 0);
+  //  tlc_send(2, -right_motor);
+  //  tlc_send(3, 0);
+  //} else {
+  //  tlc_send(0, 0);
+  //  tlc_send(1, 0);
+  //  tlc_send(2, 0);
+  //  tlc_send(3, 0);
+  //}
 
   if (left_motor > 0) {
     tlc_send(4, 0);
@@ -284,30 +284,21 @@ void setup() {
   Wire.begin();
 }
 
-unsigned long last_motor;
-
-int joyX = 512;
-int joyY = 512;
 
 void loop() {
-  unsigned long now = millis();
-  
+  delay(100);
+  /*
   if(radio.available()) {
     radio.read(&recievePacket, sizeof(recievePacket));
-    joyX = (recievePacket[3]-'0')+10*(recievePacket[2]-'0')+100*(recievePacket[1]-'0')+1000*(recievePacket[0]-'0');
-    joyY = (recievePacket[9]-'0')+10*(recievePacket[8]-'0')+100*(recievePacket[7]-'0')+1000*(recievePacket[6]-'0');
+    //Serial.println(recievePacket);
+    int joyX = (recievePacket[3]-'0')+10*(recievePacket[2]-'0')+100*(recievePacket[1]-'0')+1000*(recievePacket[0]-'0');
+    int joyY = (recievePacket[9]-'0')+10*(recievePacket[8]-'0')+100*(recievePacket[7]-'0')+1000*(recievePacket[6]-'0');
+    setMotor(joyX, joyY);
+    //Serial.println(joyY);
   }
-
-  if (now - last_motor > 10) {
-      setMotor(joyX, joyY);
-      last_motor = now;
-  }
-  
-  /*
+  */
   tlc_send(0, 0);
   tlc_send(1, 3000);
   tlc_send(6, 0);
   tlc_send(7, 3000);
-  */
-  
 }
