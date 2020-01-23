@@ -252,7 +252,7 @@ void setup() {
 
 
   // Radio Setup
-  radio.begin();
+  radio.begin();robotData.readChannel
   radio.openReadingPipe(1, robotData.readChannel);
   radio.setPALevel(RF24_PA_MIN);
   Serial.println("Node statring");
