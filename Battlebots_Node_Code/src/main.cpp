@@ -14,7 +14,7 @@
 
 
 RF24 radio(D7, D8); // CE, CSN
-//const byte addresses[][6] = {"00001", "00002"};
+const byte addresses[][6] = {"00001", "00002"};
 
 char sendPacket[32] = "";
 char recievePacket[32] = "";
@@ -48,22 +48,22 @@ void setMotor(int joyX, int joyY){
   Serial.print(" ");
   Serial.println(right_motor);
 
-  if (right_motor > 0) {
+  //if (right_motor > 0) {
     tlc_send(0, 0);
-    tlc_send(1, right_motor);
+    tlc_send(1, 3000);
     tlc_send(2, 0);
-    tlc_send(3, right_motor);
-  } else if (right_motor < 0) {
-    tlc_send(0, -right_motor);
-    tlc_send(1, 0);
-    tlc_send(2, -right_motor);
-    tlc_send(3, 0);
-  } else {
-    tlc_send(0, 0);
-    tlc_send(1, 0);
-    tlc_send(2, 0);
-    tlc_send(3, 0);
-  }
+    tlc_send(3, 3000);
+  //} else if (right_motor < 0) {
+  //  tlc_send(0, -right_motor);
+  //  tlc_send(1, 0);
+  //  tlc_send(2, -right_motor);
+  //  tlc_send(3, 0);
+  //} else {
+  //  tlc_send(0, 0);
+  //  tlc_send(1, 0);
+  //  tlc_send(2, 0);
+  //  tlc_send(3, 0);
+  //}
 
   if (left_motor > 0) {
     tlc_send(4, 0);
@@ -220,36 +220,57 @@ eepromData robotData;
 void setup() {
   
   Serial.begin(9600);
+  
 
+  /*
   //Check if EEPROM is programmed with valid data
   int checkValue = 0;
   EEPROM.get(0, checkValue);
-  if(checkValue != 1){
+  if(checkValue != 2011){
     Serial.println("Programming EEPROM with default values");
     eepromData defaultData = {
       "00001",
       "00002",
-      "Battlebots_Setup",
-      "OMGR0b0t$",
+      "Battlebots_Setup000",
+      "OMGR0b0t$0000000000",
       "RRRRRRRRRRRRRRRRRRR",
       "0000000000000000000",
-      "Untitled Document"
+      "Untitled Document00"
     };
-    EEPROM.put(0, 1);
-    EEPROM.put(16, defaultData);
+    EEPROM.put(0, 2011);
+    EEPROM.put(32, defaultData);
+    EEPROM.commit();
   }
-  EEPROM.get(16, robotData);
+  EEPROM.get(32, robotData);
+  EEPROM.end();
   
   // Print out juicy details
+  
   Serial.print("Read Channel ");
-  //Serial.println(robotData.readChannel);
-  Serial.print("Write Channel ");
-  //Serial.println(robotData.writeChannel);
+  Serial.println((long)robotData.readChannel);
+  Serial.print("Write Channel ");  
+  Serial.println((long)robotData.writeChannel);
   Serial.print("Robot Name ");
-  //Serial.println(robotData.name);
+  Serial.println((long)robotData.name);
+  */
 
+  // EEPROM Setup
+  // set the EEPROM structure
+  /*
+  struct EEPROM_storage {
+    uint8_t channelNo;
+    char ssid[pfodESP8266Utils::MAX_SSID_LEN + 1]; // WIFI ssid + null
+    char password[pfodESP8266Utils::MAX_PASSWORD_LEN + 1]; // WiFi password,  if empyt use OPEN, else use AUTO (WEP/WPA/WPA2) + null
+  } storage;
+  const int EEPROM_storageSize = sizeof(EEPROM_storage);
 
+  EEPROM.begin(EEPROM_storageSize);
 
+  uint8_t * byteStorageRead = (uint8_t *)&storage;
+  for (size_t i = 0; i < EEPROM_storageSize; i++) {
+    byteStorageRead[i] = EEPROM.read(wifiConfigEEPROMStartAddress + i);
+  }
+*/
 
   // Radio Setup
   radio.begin();robotData.readChannel
@@ -263,30 +284,21 @@ void setup() {
   Wire.begin();
 }
 
-unsigned long last_motor;
-
-int joyX = 512;
-int joyY = 512;
 
 void loop() {
-  unsigned long now = millis();
-  
+  delay(100);
+  /*
   if(radio.available()) {
     radio.read(&recievePacket, sizeof(recievePacket));
-    joyX = (recievePacket[3]-'0')+10*(recievePacket[2]-'0')+100*(recievePacket[1]-'0')+1000*(recievePacket[0]-'0');
-    joyY = (recievePacket[9]-'0')+10*(recievePacket[8]-'0')+100*(recievePacket[7]-'0')+1000*(recievePacket[6]-'0');
+    //Serial.println(recievePacket);
+    int joyX = (recievePacket[3]-'0')+10*(recievePacket[2]-'0')+100*(recievePacket[1]-'0')+1000*(recievePacket[0]-'0');
+    int joyY = (recievePacket[9]-'0')+10*(recievePacket[8]-'0')+100*(recievePacket[7]-'0')+1000*(recievePacket[6]-'0');
+    setMotor(joyX, joyY);
+    //Serial.println(joyY);
   }
-
-  if (now - last_motor > 10) {
-      setMotor(joyX, joyY);
-      last_motor = now;
-  }
-  
-  /*
+  */
   tlc_send(0, 0);
   tlc_send(1, 3000);
-  tlc_send(6, 0);
-  tlc_send(7, 3000);
-  */
-  
+  tlc_send(2, 0);
+  tlc_send(3, 3000);
 }
